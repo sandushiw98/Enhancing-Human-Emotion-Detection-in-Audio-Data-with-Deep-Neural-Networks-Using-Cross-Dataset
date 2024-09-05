@@ -3,3 +3,94 @@ from google.colab import drive
 import os
 
 drive.mount('/content/drive')
+
+# Combine both REVDASS and TESS Dataset and Augmentation
+
+!pip install joblib
+
+import os
+import shutil
+import random
+
+# Configuration paths
+TRAINING_FILES_PATH = '/content/drive/MyDrive/emotion-classification-from-audio-files-master/emotion-classification-from-audio-files-master/features'
+TESS_ORIGINAL_FOLDER_PATH = '/content/drive/MyDrive/emotion-classification-from-audio-files-master/emotion-classification-from-audio-files-master/TESS_Toronto_emotional_speech_set_data'
+
+class TESSPipeline:
+
+    @staticmethod
+    def create_tess_folders(path):
+        """
+        Create and fill folders Actor_25 if YAF and Actor_26 if OAF.
+        Files will be copied and renamed, not moved, to avoid messing up
+        during the development of the pipeline.
+        Actor_25 and Actor_26 folders must be created before running this script.
+        Example filename: 03-01-07-02-02-01-01.wav
+        """
+        label_conversion = {
+            '01': 'neutral',
+            '03': 'happy',
+            '04': 'sad',
+            '05': 'angry',
+            '06': 'fear',
+            '07': 'disgust',
+            '08': 'ps'  # pleasant surprise
+        }
+
+        for subdir, _, files in os.walk(path):
+            for filename in files:
+                try:
+                    if filename.startswith('OAF'):
+                        destination_path = os.path.join(TRAINING_FILES_PATH, 'Actor_26')
+                    else:
+                        destination_path = os.path.join(TRAINING_FILES_PATH, 'Actor_25')
+
+                    old_file_path = os.path.join(subdir, filename)
+                    base, extension = os.path.splitext(filename)
+
+                    for key, value in label_conversion.items():
+                        if base.endswith(value):
+                            random_list = random.sample(range(10, 99), 7)
+                            file_name = '-'.join(map(str, random_list))
+                            file_name_with_correct_emotion = file_name[:6] + key + file_name[8:] + extension
+                            new_file_path = os.path.join(destination_path, file_name_with_correct_emotion)
+
+                            # Ensure destination directory exists
+                            os.makedirs(destination_path, exist_ok=True)
+                            shutil.copy(old_file_path, new_file_path)
+                            break  # Move to the next file after finding the correct emotion
+                except Exception as e:
+                    print(f"Error processing file {filename}: {e}")
+
+    @staticmethod
+    def create_calm_folders(path):
+
+        actor_27_path = os.path.join(TRAINING_FILES_PATH, 'Actor_27')
+        os.makedirs(actor_27_path, exist_ok=True)
+
+        for subdir, dirs, files in os.walk(path):
+            for filename in files:
+                parts = filename.split('-')  # Split the filename into parts
+                if len(parts) >= 3 and parts[2] == '02':  # Check if the third part is '02'
+                    full_file_path = os.path.join(subdir, filename)  # Construct the full file path
+
+                    # First copy with the original filename
+                    destination_file_path_1 = os.path.join(actor_27_path, filename)
+
+                    # Ensure source and destination are not the same
+                    if full_file_path != destination_file_path_1:
+                        shutil.copy(full_file_path, destination_file_path_1)
+
+                    # Modify the first number from '03' to '04' for the second copy
+                    parts[0] = '04'
+                    modified_filename = '-'.join(parts)
+                    destination_file_path_2 = os.path.join(actor_27_path, modified_filename)
+
+                    # Ensure source and destination are not the same
+                    if full_file_path != destination_file_path_2:
+                        shutil.copy(full_file_path, destination_file_path_2)
+
+if __name__ == '__main__':
+    TESSPipeline.create_tess_folders(TESS_ORIGINAL_FOLDER_PATH)
+    TESSPipeline.create_calm_folders(TRAINING_FILES_PATH)
+
