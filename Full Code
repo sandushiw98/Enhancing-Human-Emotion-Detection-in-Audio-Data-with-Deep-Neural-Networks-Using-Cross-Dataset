@@ -11,6 +11,12 @@ drive.mount('/content/drive')
 import os
 import shutil
 import random
+import os
+import time
+import joblib
+import librosa
+import numpy as np
+import resampy
 
 # Configuration paths
 TRAINING_FILES_PATH = '/content/drive/MyDrive/emotion-classification-from-audio-files-master/emotion-classification-from-audio-files-master/features'
@@ -93,4 +99,12 @@ class TESSPipeline:
 if __name__ == '__main__':
     TESSPipeline.create_tess_folders(TESS_ORIGINAL_FOLDER_PATH)
     TESSPipeline.create_calm_folders(TRAINING_FILES_PATH)
+
+#Extract feature from audio file using MFCC
+
+!pip install joblib librosa resampy
+
+# Configuration paths
+SAVE_DIR_PATH = '/content/drive/MyDrive/NN Research/emotion-classification-from-audio-files-master/emotion-classification-from-audio-files-master/joblib_features'
+TRAINING_FILES_PATH = '/content/drive/MyDrive/NN Research/emotion-classification-from-audio-files-master/emotion-classification-from-audio-files-master/features'
 
