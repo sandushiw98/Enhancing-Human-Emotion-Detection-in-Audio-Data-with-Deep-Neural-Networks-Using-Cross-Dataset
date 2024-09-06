@@ -172,3 +172,8 @@ if __name__ == '__main__':
     FEATURES = CreateFeatures.features_creator(path=TRAINING_FILES_PATH, save_dir=SAVE_DIR_PATH)
     print('Routine completed.')
 
+# Configuration paths
+SAVE_DIR_PATH = '/content/drive/MyDrive/NN Research/emotion-classification-from-audio-files-master/emotion-classification-from-audio-files-master/joblib_features'
+MODEL_DIR_PATH = '/content/drive/MyDrive/NN Research/emotion-classification-from-audio-files-master/emotion-classification-from-audio-files-master/model'
+
+
