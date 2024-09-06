@@ -176,4 +176,8 @@ if __name__ == '__main__':
 SAVE_DIR_PATH = '/content/drive/MyDrive/NN Research/emotion-classification-from-audio-files-master/emotion-classification-from-audio-files-master/joblib_features'
 MODEL_DIR_PATH = '/content/drive/MyDrive/NN Research/emotion-classification-from-audio-files-master/emotion-classification-from-audio-files-master/model'
 
-
+# Set up GPU memory growth
+physical_devices = tf.config.experimental.list_physical_devices('GPU')
+if physical_devices:
+    for device in physical_devices:
+        tf.config.experimental.set_memory_growth(device, True)
