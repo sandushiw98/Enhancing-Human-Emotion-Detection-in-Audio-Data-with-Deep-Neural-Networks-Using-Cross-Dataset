@@ -282,3 +282,16 @@ class TrainModel:
         print(matrix)
 
         model_name = 'Emotion_Voice_Detection_Model.h5'
+
+
+# Save model and weights
+        model_path = Path(MODEL_DIR_PATH) / model_name
+        model_path.parent.mkdir(parents=True, exist_ok=True)
+        model.save(model_path)
+        print('Saved trained model at %s ' % model_path)
+
+if __name__ == '__main__':
+    print('Training started')
+    X = joblib.load(Path(SAVE_DIR_PATH) / 'X.joblib')
+    y = joblib.load(Path(SAVE_DIR_PATH) / 'y.joblib')
+    NEURAL_NET = TrainModel.train_neural_network(X=X, y=y)
