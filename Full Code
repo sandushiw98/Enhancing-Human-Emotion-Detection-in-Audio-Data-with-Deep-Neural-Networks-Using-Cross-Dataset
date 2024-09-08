@@ -249,3 +249,8 @@ class TrainModel:
         print(model.summary())
 
         model.compile(loss='sparse_categorical_crossentropy', optimizer=tf.keras.optimizers.Adam(learning_rate=0.0001), metrics=['accuracy'])
+        
+        early_stopping = EarlyStopping(monitor='val_loss', patience=15, restore_best_weights=True)
+        reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=5, min_lr=1e-6)
+
+        cnn_history = model.fit(x_traincnn, y_train, batch_size=64, epochs=300, validation_data=(x_testcnn, y_test), callbacks=[early_stopping, reduce_lr])
