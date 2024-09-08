@@ -199,3 +199,53 @@ class TrainModel:
         x = Add()([x, res])
         x = Activation('relu')(x)
         return x
+@staticmethod
+    def train_neural_network(X, y) -> None:
+        """
+        This function trains the neural network.
+        """
+
+        # Normalize the data
+        scaler = StandardScaler()
+        X = scaler.fit_transform(X)
+
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=42)
+
+        x_traincnn = np.expand_dims(X_train, axis=2)
+        x_testcnn = np.expand_dims(X_test, axis=2)
+
+        print(x_traincnn.shape, x_testcnn.shape)
+
+        input_shape = (40, 1)
+        inputs = Input(shape=input_shape)
+
+        x = Conv1D(64, 3, padding='same', kernel_regularizer=tf.keras.regularizers.l2(0.001))(inputs)
+        x = BatchNormalization()(x)
+        x = Activation('relu')(x)
+        x = MaxPooling1D(pool_size=2)(x)
+        x = Dropout(0.3)(x)
+
+        x = TrainModel.residual_block(x, 128)
+        x = MaxPooling1D(pool_size=2)(x)
+        x = Dropout(0.3)(x)
+
+        x = TrainModel.residual_block(x, 256)
+        x = MaxPooling1D(pool_size=2)(x)
+        x = Dropout(0.4)(x)
+
+        x = TrainModel.residual_block(x, 512)
+        x = MaxPooling1D(pool_size=2)(x)
+        x = Dropout(0.5)(x)
+
+        x = GlobalAveragePooling1D()(x)
+        x = Dense(512, activation='relu', kernel_regularizer=tf.keras.regularizers.l2(0.001))(x)
+        x = Dropout(0.5)(x)
+        x = Dense(256, activation='relu', kernel_regularizer=tf.keras.regularizers.l2(0.001))(x)
+        x = Dropout(0.5)(x)
+        outputs = Dense(8, activation='softmax')(x)
+
+        model = Model(inputs, outputs)
+
+        print(model.summary())
+
+        model.compile(loss='sparse_categorical_crossentropy', optimizer=tf.keras.optimizers.Adam(learning_rate=0.0001), metrics=['accuracy'])
