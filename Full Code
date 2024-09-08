@@ -181,3 +181,21 @@ physical_devices = tf.config.experimental.list_physical_devices('GPU')
 if physical_devices:
     for device in physical_devices:
         tf.config.experimental.set_memory_growth(device, True)
+
+class TrainModel:
+
+    @staticmethod
+    def residual_block(x, filters, kernel_size=3, stride=1):
+        res = Conv1D(filters, kernel_size, padding='same', strides=stride, kernel_regularizer=tf.keras.regularizers.l2(0.001))(x)
+        res = BatchNormalization()(res)
+        res = Activation('relu')(res)
+        res = Conv1D(filters, kernel_size, padding='same', strides=stride, kernel_regularizer=tf.keras.regularizers.l2(0.001))(res)
+        res = BatchNormalization()(res)
+
+        if x.shape[-1] != filters:
+            x = Conv1D(filters, kernel_size, padding='same', strides=stride, kernel_regularizer=tf.keras.regularizers.l2(0.001))(x)
+            x = BatchNormalization()(x)
+
+        x = Add()([x, res])
+        x = Activation('relu')(x)
+        return x
