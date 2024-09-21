@@ -312,3 +312,19 @@ MODEL_DIR_PATH = '/content/drive/MyDrive/NN Research/emotion-classification-from
 from google.colab import drive
 drive.mount('/content/drive')
 
+class LivePredictions:
+    """
+    Main class of the application.
+    """
+
+    def __init__(self, file):
+        """
+        Init method is used to initialize the main parameters.
+        """
+        self.file = file
+        self.path = os.path.join(MODEL_DIR_PATH, 'Emotion_Voice_Detection_Model.h5')
+
+        if not os.path.exists(self.path):
+            raise FileNotFoundError(f"Model file not found: {self.path}")
+
+        self.loaded_model = tf.keras.models.load_model(self.path)
