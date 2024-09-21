@@ -360,3 +360,18 @@ class LivePredictions:
         }
 
         return label_conversion.get(pred, "Unknown")
+
+if __name__ == '__main__':
+    example_file_1 = os.path.join(EXAMPLES_PATH, '03-02-02-02-01-02-05.wav')
+    example_file_2 = os.path.join(EXAMPLES_PATH, '03-02-05-02-02-01-01.wav')
+    example_file_3 = os.path.join(EXAMPLES_PATH, 'Happy.wav')
+
+    live_prediction = LivePredictions(file=example_file_1)
+    live_prediction.loaded_model.summary()
+    live_prediction.make_predictions()
+
+    live_prediction = LivePredictions(file=example_file_2)
+    live_prediction.make_predictions()
+
+    live_prediction = LivePredictions(file=example_file_3)
+    live_prediction.make_predictions()
