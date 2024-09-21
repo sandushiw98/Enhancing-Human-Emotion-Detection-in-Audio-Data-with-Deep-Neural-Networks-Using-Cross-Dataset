@@ -295,3 +295,20 @@ if __name__ == '__main__':
     X = joblib.load(Path(SAVE_DIR_PATH) / 'X.joblib')
     y = joblib.load(Path(SAVE_DIR_PATH) / 'y.joblib')
     NEURAL_NET = TrainModel.train_neural_network(X=X, y=y)
+
+
+!pip install librosa tensorflow
+
+import os
+import librosa
+import numpy as np
+import tensorflow as tf
+
+# Configuration paths
+EXAMPLES_PATH = '/content/drive/MyDrive/NN Research/emotion-classification-from-audio-files-master/emotion-classification-from-audio-files-master/examples'
+MODEL_DIR_PATH = '/content/drive/MyDrive/NN Research/emotion-classification-from-audio-files-master/emotion-classification-from-audio-files-master/model'
+
+# Mount Google Drive
+from google.colab import drive
+drive.mount('/content/drive')
+
