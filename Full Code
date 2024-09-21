@@ -342,3 +342,21 @@ class LivePredictions:
         predicted_class = np.argmax(predictions, axis=1)[0]
 
         print(f"Prediction is: {self.convert_class_to_emotion(predicted_class)}")
+
+ @staticmethod
+    def convert_class_to_emotion(pred):
+        """
+        Method to convert the predictions (int) into human readable strings.
+        """
+        label_conversion = {
+            0: 'neutral',
+            1: 'calm',
+            2: 'happy',
+            3: 'sad',
+            4: 'angry',
+            5: 'fearful',
+            6: 'disgust',
+            7: 'surprised'
+        }
+
+        return label_conversion.get(pred, "Unknown")
