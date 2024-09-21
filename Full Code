@@ -328,3 +328,17 @@ class LivePredictions:
             raise FileNotFoundError(f"Model file not found: {self.path}")
 
         self.loaded_model = tf.keras.models.load_model(self.path)
+
+ def make_predictions(self):
+        """
+        Method to process the files and create your features.
+        """
+        data, sampling_rate = librosa.load(self.file, res_type='kaiser_fast')
+        mfccs = np.mean(librosa.feature.mfcc(y=data, sr=sampling_rate, n_mfcc=40).T, axis=0)
+        x = np.expand_dims(mfccs, axis=0)  # Add batch dimension
+        x = np.expand_dims(x, axis=2)  # Add channel dimension
+
+        predictions = self.loaded_model.predict(x)
+        predicted_class = np.argmax(predictions, axis=1)[0]
+
+        print(f"Prediction is: {self.convert_class_to_emotion(predicted_class)}")
